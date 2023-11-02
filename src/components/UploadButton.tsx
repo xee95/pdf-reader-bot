@@ -17,7 +17,11 @@ const UploadDropzone = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const { toast } = useToast();
 
-  const { startUpload } = useUploadThing("imageuploader");
+  
+  const { startUpload } = useUploadThing(
+    isSubscribed ? 'proPlanUploader' : 'freePlanUploader'
+  )
+  // const { startUpload } = useUploadThing("imageuploader");
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
@@ -95,7 +99,7 @@ const UploadDropzone = () => {
                   <span className="font-semibold">Click to upload</span> or drag
                   and drop
                 </p>
-                <p className="text-xs text-zinc-500">PDF "4" MB</p>
+                <p className="text-xs text-zinc-500">PDF (up to {isSubscribed ? "16" : "4"} MB</p>
               </div>
 
               {acceptedFiles && acceptedFiles[0] ? (
@@ -113,7 +117,9 @@ const UploadDropzone = () => {
                 <div className="w-full mt-4 max-w-xs mx-auto">
                   <Progress
                     indicatorColor={
-                      uploadProgress === 100 ? "bg-green-500" : ""
+                      uploadProgress === 100
+                        ? 'bg-green-500'
+                        : ''
                     }
                     value={uploadProgress}
                     className="h-1 w-full bg-zinc-200"
