@@ -4,7 +4,12 @@ import {
   createUploadthing,
   type FileRouter,
 } from 'uploadthing/next'
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { PineconeStore } from 'langchain/vectorstores/pinecone'
+import {  pinecone } from '@/lib/pincone'
+// import { getPineconeClient } from '@/lib/pincone'
 
 const f = createUploadthing()
 
@@ -29,6 +34,60 @@ export const ourFileRouter = {
               uploadStatus: 'PROCESSING',
             },
           })
+
+          try {
+            const response = await fetch(
+              `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`
+            )
+
+            const blob = await response.blob()
+
+    const loader = new PDFLoader(blob)
+
+    const pageLevelDocs = await loader.load()
+     pageLevelDocs[0].metadata.fileId = createdFile.id
+
+    const pagesAmt = pageLevelDocs.length
+
+
+    // const pinecone = await getPineconeClient()
+    const pineconeIndex = pinecone.Index('pdfreader')
+    console.log("emmbaedding1")
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    })
+
+    console.log("emmbaedding")
+    await PineconeStore.fromDocuments(
+      pageLevelDocs,
+      embeddings,
+      {
+       // @ts-ignore
+        pineconeIndex,
+        // namespace: createdFile.id,
+      }
+    )
+
+    await db.file.update({
+      data: {
+        uploadStatus: 'SUCCESS',
+      },
+      where: {
+        id: createdFile.id,
+      },
+    })
+          }
+          catch(err){
+            console.log(err)
+            // await db.file.update({
+            //   data: {
+            //     uploadStatus: 'FAILED',
+            //   },
+            //   where: {
+            //     id: createdFile.id,
+            //   },
+            // })
+          }
     }),
     
   

@@ -21,11 +21,12 @@ const AuthCallback = () => {
         },
         onError: (err) => {
           if (err.data?.code === 'UNAUTHORIZED') {
+            console.log("no login")
             router.push('/sign-in')
           }
         },
         retry: true,
-        retryDelay: 2000,
+        retryDelay: 500,
       })
 
     return ( 
