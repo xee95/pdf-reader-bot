@@ -75,11 +75,14 @@ const DashboadComponent = ({subscriptionPlan}: PageProps) => {
                     <Plus className="h-4 w-4" />
                     {format(new Date(file.createdAt), "MMM yyyy")}
                   </div>
-
+                  <Link
+                  href={`/dashboard/${file.id}`}>
                   <div className="flex items-center gap-2">
+                  
                     <MessageSquare className="h-4 w-4" />
-                    mocked
+                    {/* mocked */}
                   </div>
+                  </Link>
                   <Button
                     onClick={() => deleteFile({ id: file.id })}
                     size="sm"
