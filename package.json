@@ -34,7 +34,7 @@
     "date-fns": "^2.30.0",
     "langchain": "^0.0.170",
     "lucide-react": "^0.287.0",
-    "next": "13.5.4",
+    "next": "^13.5.3",
     "pdf-parse": "^1.1.1",
     "react": "^18",
     "react-dom": "^18",
