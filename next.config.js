@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  swcMinify: true,
+  swcMinify: false,
   images: {
     domains: ['lh3.googleusercontent.com'],
   },
