@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  swcMinify: false,
-  images: {
-    domains: ['lh3.googleusercontent.com'],
-  },
+  // swcMinify: false,
+  // images: {
+  //   domains: ['lh3.googleusercontent.com'],
+  // },
   async headers() {
     return [
         {
