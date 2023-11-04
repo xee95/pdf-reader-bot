@@ -65,6 +65,7 @@ const onUploadComplete = async ({
     const loader = new PDFLoader(blob)
 
     const pageLevelDocs = await loader.load()
+    pageLevelDocs[0].metadata.fileId = createdFile.id
 
     const pagesAmt = pageLevelDocs.length
 
@@ -83,6 +84,7 @@ const onUploadComplete = async ({
       (isSubscribed && isProExceeded) ||
       (!isSubscribed && isFreeExceeded)
     ) {
+      console.log(isSubscribed,isProExceeded,isFreeExceeded,"checking"),
       await db.file.update({
         data: {
           uploadStatus: 'FAILED',
@@ -95,7 +97,7 @@ const onUploadComplete = async ({
 
     // vectorize and index entire document
     // const pinecone = await getPineconeClient()
-    const pineconeIndex = pinecone.Index('quill')
+    const pineconeIndex = pinecone.Index('pdfreader')
 
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,

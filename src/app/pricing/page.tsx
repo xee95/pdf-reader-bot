@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { PLANS } from '@/config/stripe'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { cn } from '@/lib/utils'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import {
@@ -19,7 +20,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const Page = () => {
+const Page = async() => {
   const { getUser } = getKindeServerSession()
   const user = getUser()
 
@@ -84,6 +85,7 @@ const Page = () => {
     },
   ]
 
+  const subsciptionCheck = await getUserSubscriptionPlan()
   return (
     <>
       <MaxWidthWrapper className='mb-8 mt-24 text-center max-w-5xl'>
@@ -220,11 +222,11 @@ const Page = () => {
                             className: 'w-full',
                             variant: 'secondary',
                           })}>
-                          {user ? 'Upgrade now' : 'Sign up'}
+                          {user ? 'Dashboard' : 'Sign up'}
                           <ArrowRight className='h-5 w-5 ml-1.5' />
                         </Link>
-                      ) : user ? (
-                        <UpgradeButton />
+                      ) : user ? ( 
+                        <UpgradeButton isDisabled={subsciptionCheck.isSubscribed}/>
                       ) : (
                         <Link
                           href='/sign-in'
